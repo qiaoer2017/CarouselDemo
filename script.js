@@ -3,16 +3,20 @@
  */
 window.onload = function () {
     var container = document.getElementById("container");
+    var list = document.getElementById("list");
+    var buttons = document.getElementById("buttons").getElementsByTagName("span");
     var prev = document.getElementById("prev");
     var next = document.getElementById("next");
-    var list = document.getElementById("list");
 
-    prev.onclick = function () {
-        list.style.left = (parseInt(list.style.left) + 600) + 'px';
-
-    };
     next.onclick = function () {
-        list.style.left = (parseInt(list.style.left) - 600) + 'px';
+        switchingCurrentItem(-600);
+    };
+    prev.onclick = function () {
+        switchingCurrentItem(600);
     };
 
 };
+
+function switchingCurrentItem(offset) {
+    list.style.left = (parseInt(list.style.left) + offset) + 'px';
+}
