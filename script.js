@@ -10,59 +10,88 @@ window.onload = function () {
 
     var currentIndex = 1;
 
+    var sliding = false;//是否正在滑动
+
     next.onclick = function () {
-        if (currentIndex >= 5) {
-            currentIndex = 1;
-        } else {
-            currentIndex += 1;
+
+        if (!sliding) {
+            if (currentIndex >= 5) {
+                currentIndex = 1;
+            } else {
+                currentIndex += 1;
+            }
+            switchingCurrentItem(-600);
+            changeIndicator();
         }
-        switchingCurrentItem(-600);
-        changeIndicator();
     };
     prev.onclick = function () {
-        if (currentIndex <= 1) {
-            currentIndex = 5;
-        } else {
-            currentIndex -= 1;
+
+        if (!sliding) {
+            if (currentIndex <= 1) {
+                currentIndex = 5;
+            } else {
+                currentIndex -= 1;
+            }
+            switchingCurrentItem(600);
+            changeIndicator();
+
         }
-        switchingCurrentItem(600);
-        changeIndicator();
     };
 
     for (var i = 0; i < buttons.length; i++) {
         buttons[i].onclick = function () {
-            if (this.className != 'on') {
-                var myIndex = parseInt(this.getAttribute('index'));
-                var offset = -600 * (myIndex - currentIndex);
-                currentIndex = myIndex;
-
-                switchingCurrentItem(offset);
-                changeIndicator();
+            if (!sliding) {
+                if (this.className != 'on') {
+                    var myIndex = parseInt(this.getAttribute('index'));
+                    var offset = -600 * (myIndex - currentIndex);
+                    currentIndex = myIndex;
+                    switchingCurrentItem(offset);
+                    changeIndicator();
+                }
             }
         };
     }
 
 
     function switchingCurrentItem(offset) {
-        var newLeft = parseInt(list.style.left) + offset;
-        list.style.left = newLeft + 'px';
+        sliding = true;
 
-        if (newLeft > -600) {
-            list.style.left = -3000 + 'px';
+        var newLeft = parseInt(list.style.left) + offset;
+        var interval = 5;//位移间隔时间
+
+        if (offset > 0) {
+            speed = 20;
+        } else if (offset < 0) {
+            speed = -20;
         }
-        if (newLeft < -3000) {
-            list.style.left = -600 + 'px';
+
+        function slide() {
+            if ((speed > 0 && parseInt(list.style.left) < newLeft) || (speed < 0 && parseInt(list.style.left) > newLeft)) {
+                list.style.left = parseInt(list.style.left) + speed + 'px';
+
+                setTimeout(slide, interval);
+            } else {
+                sliding = false;
+                list.style.left = newLeft + 'px';
+                if (newLeft > -600) {
+                    list.style.left = -3000 + 'px';
+                }
+                if (newLeft < -3000) {
+                    list.style.left = -600 + 'px';
+                }
+
+            }
         }
+
+        slide();
     }
 
     function changeIndicator() {
         for (var i = 0; i < buttons.length; i++) {
             if (buttons[i].className == 'on') {
-                // debugger;
                 buttons[i].className = '';
                 break;
             }
-            // buttons[i].className = '';
         }
         buttons[currentIndex - 1].className = 'on';
     }
