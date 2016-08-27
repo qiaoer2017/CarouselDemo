@@ -29,6 +29,20 @@ window.onload = function () {
         changeIndicator();
     };
 
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].onclick = function () {
+            if (this.className != 'on') {
+                var myIndex = parseInt(this.getAttribute('index'));
+                var offset = -600 * (myIndex - currentIndex);
+                currentIndex = myIndex;
+
+                switchingCurrentItem(offset);
+                changeIndicator();
+            }
+        };
+    }
+
+
     function switchingCurrentItem(offset) {
         var newLeft = parseInt(list.style.left) + offset;
         list.style.left = newLeft + 'px';
@@ -48,6 +62,7 @@ window.onload = function () {
                 buttons[i].className = '';
                 break;
             }
+            // buttons[i].className = '';
         }
         buttons[currentIndex - 1].className = 'on';
     }
